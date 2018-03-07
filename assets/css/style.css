@@ -114,12 +114,24 @@ h3 {
   margin: 30px auto;
 }
 
+h4 {
+  border-bottom: 1px solid #ff0000;
+  font-size: 1.8em;
+  text-align: center;
+  width: 100%;
+}
+
+#h4-two {
+  margin-top: 50px;
+}
+
 table {
   table-layout: fixed;
   width: 300px;
 }
 
 th {
+  text-align: left;
   padding: 4px 0;
   text-decoration: underline;
 }
@@ -130,11 +142,10 @@ tr {
 }
 
 th:first-child {
-  width: 80px;
+  width: 100px;
 }
 
 th:last-child {
-  text-align: left;
   padding-left: 10px;
 }
 
