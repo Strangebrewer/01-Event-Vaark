@@ -36,15 +36,17 @@ function displayMovies(p1, p2, p3, p4) {
     for (let i = 0; i < results.length; i++) {
       const element = results[i];
       var movieDiv = $("<div class='movie-container'>");
-      var movieTitle = $("<p class='movie-title'>").text(element.original_title);
-      var movieImg = $("<img class='movie-poster'>");
       var addBtn = $("<button class='add-movie-btn'>");
+      var movieImg = $("<img class='movie-poster'>");
+      var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
+      var movieTitle = $("<p class='movie-title'>").text(element.original_title);
       movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
       addBtn.attr("movie-id", element.id);
       addBtn.attr("release-date", element.release_date);
       addBtn.text("Add to My Movies");
       movieDiv.append(addBtn);
       movieDiv.append(movieImg);
+      movieDiv.append(releaseDate);
       movieDiv.append(movieTitle);
       $("#dynamic-content").append(movieDiv);
     }
@@ -70,11 +72,12 @@ function displayMovies(p1, p2, p3, p4) {
 }
 
 //  Adds a movie to the database (which is where 'My List' entries are stored)
-function newDbMovieObject(p1, p2, p3) {
+function newDbMovieObject(p1, p2, p3, p4) {
   var dbKey = p3;
   var newMovie = {
     title: p1,
-    poster: p2,
+    date: p2,
+    poster: p4,
     objKey: dbKey
   }
   return varkDb.ref("movies").child(dbKey).set(newMovie);
@@ -143,7 +146,7 @@ $("#dynamic-content").on("click", ".add-movie-btn", function () {
   var poster = $(this).siblings("img").attr("src");
   var movieId = $(this).attr("movie-id");
   var rlsDate = $(this).attr("release-date");
-  newDbMovieObject(title, poster, movieId);
+  newDbMovieObject(title, rlsDate, movieId, poster);
   movieQuickListItem(title, rlsDate, movieId);
 });
 
@@ -159,7 +162,7 @@ $("#my-movie-content").on("click", ".remove-movie-btn", function () {
 //  Firebase listener to populate the "My Movies" page on page load
 varkDb.ref("movies").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
-  $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><p class='movie-title'>" + data.title + "</p></div>");
+  $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
 });
 
 //  Firebase listener to populate the "at a glance" list
