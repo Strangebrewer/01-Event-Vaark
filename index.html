@@ -22,11 +22,16 @@
   </header>
 
   <div class="content-wrapper">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="movies.html">My Movies</a>
+      <a href="events.html">My Events</a>
+    </nav>
 
     <div class="main-btn-array">
-      <button class="main-btn" id="display-current">Current</button>
-      <button class="main-btn" id="display-upcoming">Upcoming</button>
-      <button class="main-btn" id="display-my-list">My Lists</button>
+      <button class="main-btn" id="display-current">Current Movies</button>
+      <button class="main-btn" id="display-upcoming">Upcoming Movies</button>
+      <button class='main-btn' id="display-events">Events</button>
     </div>
 
     <div class="search-forms">
@@ -42,11 +47,6 @@
         <input type="text" id="event-input">
         <input type="submit" value="Submit" id="event-search-btn">
       </form>
-    </div>
-
-    <div id="sub-btn-array">
-      <button class='sub-btn' id="current-movies">Current Movies</button>
-      <button class='sub-btn' id="current-events">Current Events</button>
     </div>
 
     <div class="main-content" id="dynamic-content">
