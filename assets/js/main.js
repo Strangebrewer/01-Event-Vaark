@@ -22,7 +22,7 @@ var totalResults = 0;
 //  FUNCTIONS
 //  Movie API ajax call function
 function displayMovies(p1, p2, p3, p4) {
-  //  The Search term is passed in as p4 when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
+  //   //  The Search term is passed in as p4 when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
   $.ajax({
     "async": true,
     "crossDomain": true,
@@ -41,6 +41,8 @@ function displayMovies(p1, p2, p3, p4) {
       var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
       var movieTitle = $("<p class='movie-title'>").text(element.original_title);
       movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
+
+      console.log("https://image.tmdb.org/t/p/original/" + element.poster_path)
       addBtn.attr("movie-id", element.id);
       addBtn.attr("release-date", element.release_date);
       addBtn.text("Add to My Movies");
@@ -70,6 +72,35 @@ function displayMovies(p1, p2, p3, p4) {
     }
   });
 }
+
+// function displayEvents() {
+$.ajax({
+  url: 'http://api.eventful.com/json/events/search?...&l=Salt+Lake+City&date=Future&app_key=4xmNBd2Pb7vPw3Rz&sort_order=popularity',
+  method: 'GET'
+}).then(function (response) {
+  var results = JSON.parse(response).events.event;
+  console.log(JSON.parse(response).events.event);
+
+  for (let i = 0; i < response.length; i++) {
+    const element = results[i];
+    var eventDiv = $("<div class='event-container'>");
+    var addBtn = $("<button class='add-event-btn'>");
+    var eventImg = $("<img class='event-poster'>");
+    var eventDate = $("<h5 class='event-date'>").text(element.start_time);
+    var eventTitle = $("<p class='event-title'>").text(element.title);
+    eventImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.image.medium.url);
+    addBtn.attr("event-id", element.id);
+    addBtn.attr("start-time", element.start_time);
+    addBtn.text("Add to My Events");
+    eventDiv.append(addBtn);
+    eventDiv.append(eventImg);
+    eventDiv.append(eventDate);
+    eventDiv.append(eventTitle);
+    $("#dynamic-content").append(eventDiv);
+
+  }
+});
+// }
 
 //  Adds a movie to the database (which is where 'My List' entries are stored)
 function newDbMovieObject(p1, p2, p3, p4) {
