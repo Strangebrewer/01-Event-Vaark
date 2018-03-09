@@ -7,10 +7,9 @@ var pageCount = 0;
 function displayEvents(location, page, searchTerm, zipcode, within) {
   $("#dynamic-content").css("display", "block");
   $.ajax({
+    async: true,
+    crossDomain: true,
     url: "https://api.eventful.com/json/events/search?...&app_key=4xmNBd2Pb7vPw3Rz&l=" + location + zipcode + within + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&sort_order=popularity",
-    
-
-    // url: "http://api.eventful.com/json/events/search?&location=" + location + "&within=" + distance + "&keywords=" + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&app_key=4xmNBd2Pb7vPw3Rz&sort_order=popularity",
     method: 'GET'
   }).then(function (response) {
     var results = JSON.parse(response).events.event;
