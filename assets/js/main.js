@@ -10,25 +10,24 @@ var config = {
 
 firebase.initializeApp(config);
 
-var movieGlanceArray = [];
-var eventGlanceArray = [];
-
 var varkDb = firebase.database();
 
 //  Flag variables to control the functions and buttons below
-var moviePageNumber = 1;
+// var moviePageNumber = 1;
+// var eventPageNumber = 1;
+var pageNumber = 1;
 var totalResults = 0;
 
 //  FUNCTIONS
 //  Movie API ajax call function
-function displayMovies(p1, p2, p3, p4) {
-  //   //  The Search term is passed in as p4 when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
+function displayMovies(param1, param2, page, searchTerm) {
+  //   //  The Search term is passed in as searchTerm when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
   $.ajax({
     "async": true,
     "crossDomain": true,
-    //  p1 and p2 change depending on if it is a preset search (such as "upcoming" or "now-playing") or if it accepts search terms. In the former, p1 would be "movie", and in the latter, p1 would be "search".
-    //  p4 can be left out of the function call for preset searches (i.e. "upcoming" and "now_playing") without interfering with  those searches. This allows for a single function to handle all movie ajax calls.
-    url: "https://api.themoviedb.org/3/" + p1 + "/" + p2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + p4 + "&page=" + p3 + "&include_adult=false",
+    //  param1 and param2 change depending on if it is a preset search (such as "upcoming" or "now-playing") or if it accepts search terms. In the former, param1 would be "movie", and in the latter, param1 would be "search".
+    //  searchTerm can be left out of the function call for preset searches (i.e. "upcoming" and "now_playing") without interfering with  those searches. This allows for a single function to handle all movie ajax calls.
+    url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false",
     method: "GET",
   }).then(function (response) {
     console.log(response);
@@ -40,67 +39,42 @@ function displayMovies(p1, p2, p3, p4) {
       var movieImg = $("<img class='movie-poster'>");
       var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
       var movieTitle = $("<p class='movie-title'>").text(element.original_title);
-      movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
-
-      console.log("https://image.tmdb.org/t/p/original/" + element.poster_path)
+      var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
+      if (element.poster_path === null) {
+        movieImg.attr("src", "assets/images/film.jpg");
+      } else {
+        movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
+      }
       addBtn.attr("movie-id", element.id);
       addBtn.attr("release-date", element.release_date);
       addBtn.text("Add to My Movies");
       movieDiv.append(addBtn);
       movieDiv.append(movieImg);
+      movieDiv.append(movieDetails);
       movieDiv.append(releaseDate);
       movieDiv.append(movieTitle);
       $("#dynamic-content").append(movieDiv);
     }
-    p3++;
+    page++;
     totalResults += results.length;
-    console.log(response.total_results);
-    console.log(totalResults);
+    // console.log(response.total_results);
+    // console.log(totalResults);
     if (response.total_results <= totalResults) {
       //  Prevents creation of a "Load More Results" button if there are no more results to display
     }
     else {
       //  Creates a "Load More Results" button if there are more results to be displayed
       var moreResultsBtn = $("<button>");
-      moreResultsBtn.attr("id", "more-results");
-      moreResultsBtn.attr("result-type", p1);
-      moreResultsBtn.attr("result-characteristic", p2);
-      moreResultsBtn.attr("increment", p3);
-      moreResultsBtn.attr("search-term", p4);
+      moreResultsBtn.attr("id", "more-movie-results");
+      moreResultsBtn.attr("result-type", param1);
+      moreResultsBtn.attr("result-characteristic", param2);
+      moreResultsBtn.attr("increment", page);
+      moreResultsBtn.attr("search-term", searchTerm);
       moreResultsBtn.text("Load More Results");
       $("#dynamic-content").append(moreResultsBtn);
     }
   });
 }
-
-// function displayEvents() {
-$.ajax({
-  url: 'http://api.eventful.com/json/events/search?...&l=Salt+Lake+City&date=Future&app_key=4xmNBd2Pb7vPw3Rz&sort_order=popularity',
-  method: 'GET'
-}).then(function (response) {
-  var results = JSON.parse(response).events.event;
-  console.log(JSON.parse(response).events.event);
-
-  for (let i = 0; i < response.length; i++) {
-    const element = results[i];
-    var eventDiv = $("<div class='event-container'>");
-    var addBtn = $("<button class='add-event-btn'>");
-    var eventImg = $("<img class='event-poster'>");
-    var eventDate = $("<h5 class='event-date'>").text(element.start_time);
-    var eventTitle = $("<p class='event-title'>").text(element.title);
-    eventImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.image.medium.url);
-    addBtn.attr("event-id", element.id);
-    addBtn.attr("start-time", element.start_time);
-    addBtn.text("Add to My Events");
-    eventDiv.append(addBtn);
-    eventDiv.append(eventImg);
-    eventDiv.append(eventDate);
-    eventDiv.append(eventTitle);
-    $("#dynamic-content").append(eventDiv);
-
-  }
-});
-// }
 
 //  Adds a movie to the database (which is where 'My List' entries are stored)
 function newDbMovieObject(p1, p2, p3, p4) {
@@ -127,39 +101,42 @@ function movieQuickListItem(p1, p2, p3) {
 // END FUNCTIONS
 
 //  Movie API onload ajax call
-displayMovies("movie", "now_playing", moviePageNumber);
+displayMovies("movie", "now_playing", pageNumber);
 
 //  BUTTON CLICKS (event listeners)
 //  CURRENT MOVIES button - displays Current field, which defaults to movies currently in theaters
 $("#display-current").on("click", function () {
   $("#dynamic-content").empty();
+  $("#dynamic-content").css("display", "flex");
   $("#dynamic-content").append("<h3>Movies Currently in Theaters</h3>");
   totalResults = 0;
-  moviePageNumber = 1;
-  displayMovies("movie", "now_playing", moviePageNumber);
+  pageNumber = 1;
+  displayMovies("movie", "now_playing", pageNumber);
 });
 
 //  UPCOMING button - displays Upcoming field, which defaults to movies being released in the next two weeks or so
 $("#display-upcoming").on("click", function () {
   $("#dynamic-content").empty();
+  $("#dynamic-content").css("display", "flex");
   $("#dynamic-content").append("<h3>Movies Coming Soon</h3>");
   totalResults = 0;
-  moviePageNumber = 1;
-  displayMovies("movie", "upcoming", moviePageNumber);
+  pageNumber = 1;
+  displayMovies("movie", "upcoming", pageNumber);
 });
 
 //  MOVIE SEARCH button - static button, pushes search term value into movie ajax call
 $("#movie-search-btn").on("click", function (event) {
   event.preventDefault();
   $("#dynamic-content").empty();
+  $("#dynamic-content").append("<h3>Search Results</h3>");
   totalResults = 0;
-  moviePageNumber = 1;
-  displayMovies("search", "movie", moviePageNumber, $("#movie-input").val().trim());
+  pageNumber = 1;
+  displayMovies("search", "movie", pageNumber, $("#movie-input").val().trim());
   $("#movie-input").val("");
 });
 
-//  LOAD MORE RESULTS Button - dynamic button to add another page of search results
-$("#dynamic-content").on("click", "#more-results", function () {
+//  LOAD MORE MOVIE RESULTS Button - dynamic button to add another page of search results
+$("#dynamic-content").on("click", "#more-movie-results", function () {
   //  Create parameters to pass into the function
   var param1 = $(this).attr("result-type");
   var param2 = $(this).attr("result-characteristic");
@@ -171,7 +148,7 @@ $("#dynamic-content").on("click", "#more-results", function () {
   $(this).remove();
 });
 
-//  ADD TO MY MOVIES button - dynamic button, adds movie to db movies and db quickLisst
+//  ADD TO MY MOVIES button - dynamic button, adds movie to db movies and db quickList
 $("#dynamic-content").on("click", ".add-movie-btn", function () {
   var title = $(this).siblings("p").html();
   var poster = $(this).siblings("img").attr("src");
@@ -181,7 +158,7 @@ $("#dynamic-content").on("click", ".add-movie-btn", function () {
   movieQuickListItem(title, rlsDate, movieId);
 });
 
-//  REMOVE button - dynamic button, removes from My List: from html, from db movies, and from db quickList
+//  REMOVE MOVIE button - dynamic button, removes from My List: from html, from db movies, and from db quickList
 $("#my-movie-content").on("click", ".remove-movie-btn", function () {
   var remove = $(this).attr("data");
   $(this).closest("div").remove();
@@ -191,13 +168,13 @@ $("#my-movie-content").on("click", ".remove-movie-btn", function () {
 });
 
 //  Firebase listener to populate the "My Movies" page on page load
-varkDb.ref("movies").on("child_added", function (childSnapshot) {
+varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
-  $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
+  $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>More Info</a></h6><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
 });
 
 //  Firebase listener to populate the "at a glance" list
 varkDb.ref("movieQuickList").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
-  $("#movie-quick-list").append("<tr id='" + data.objKey + "'><td>" + data.date + "</td><td>" + data.title + "</td></tr>");
+  $("#movie-quick-list").append("<tr id='" + data.objKey + "'><td>" + data.date + "</td><td><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>" + data.title + "</a></td></tr>");
 });

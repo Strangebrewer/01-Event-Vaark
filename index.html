@@ -43,10 +43,14 @@
       </form>
 
       <form>
-        <label for="event-input">Event Title:</label>
-        <input type="text" id="event-input">
-        <label for="event-input">Zip Code:</label>
-        <input type="text" pattern="(\d{5}([\-]\d{4})?)" id="event-input">
+        <label for="event-keyword-input">Event Keywords:</label>
+        <input type="text" id="event-keyword-input">
+        <label for="event-city-input">Event City:</label>
+        <input type="text" id="event-city-input">
+        <label for="event-zipcode-input">Zip Code:</label>
+        <input type="text" pattern="(\d{5}([\-]\d{4})?)" id="event-zipcode-input">
+        <label for="event-within-input">Within (miles):</label>
+        <input type="text" id="event-within-input">
         <input type="submit" value="Submit" id="event-search-btn">
       </form>
     </div>
@@ -57,7 +61,7 @@
 
     <div class="at-a-glance">
       <h4>Movies</h4>
-      <table>
+      <table class="glance-table">
         <thead>
           <tr>
             <th>Release Date</th>
@@ -68,7 +72,7 @@
       </table>
 
       <h4 id="h4-two">Events</h4>
-      <table>
+      <table class="glance-table">
         <thead>
           <tr>
             <th>Event Date</th>
@@ -86,6 +90,7 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/events.js"></script>
 </body>
 
 
