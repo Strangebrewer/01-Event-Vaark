@@ -22,59 +22,65 @@ var totalResults = 0;
 //  Movie API ajax call function
 function displayMovies(param1, param2, page, searchTerm) {
   //   //  The Search term is passed in as searchTerm when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
-  $.ajax({
-    "async": true,
-    "crossDomain": true,
-    //  param1 and param2 change depending on if it is a preset search (such as "upcoming" or "now-playing") or if it accepts search terms. In the former, param1 would be "movie", and in the latter, param1 would be "search".
-    //  searchTerm can be left out of the function call for preset searches (i.e. "upcoming" and "now_playing") without interfering with  those searches. This allows for a single function to handle all movie ajax calls.
-    url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false",
-    method: "GET",
+  // $.ajax({
+  //   "async": true,
+  //   "crossDomain": true,
+  //   //  param1 and param2 change depending on if it is a preset search (such as "upcoming" or "now-playing") or if it accepts search terms. In the former, param1 would be "movie", and in the latter, param1 would be "search".
+  //   //  searchTerm can be left out of the function call for preset searches (i.e. "upcoming" and "now_playing") without interfering with  those searches. This allows for a single function to handle all movie ajax calls.
+  //   url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false",
+  //   method: "GET",
+  // })
+
+  axios({
+    method: 'get',
+    url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false"
   }).then(function (response) {
-    console.log(response);
-    var results = response.results;
-    for (let i = 0; i < results.length; i++) {
-      const element = results[i];
-      var movieDiv = $("<div class='movie-container'>");
-      var addBtn = $("<button class='add-movie-btn'>");
-      var movieImg = $("<img class='movie-poster'>");
-      var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
-      var movieTitle = $("<p class='movie-title'>").text(element.original_title);
-      var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
-      if (element.poster_path === null) {
-        movieImg.attr("src", "assets/images/film.jpg");
-      } else {
-        movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
+    console.log(response.data.results);
+      var narf = response.data.results;
+      for (let i = 0; i < narf.length; i++) {
+        const element = narf[i];
+        var movieDiv = $("<div class='movie-container'>");
+        var addBtn = $("<button class='add-movie-btn'>");
+        var movieImg = $("<img class='movie-poster'>");
+        var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
+        var movieTitle = $("<p class='movie-title'>").text(element.original_title);
+        var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
+        if (element.poster_path === null) {
+          movieImg.attr("src", "assets/images/film.jpg");
+        } else {
+          movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
+        }
+        addBtn.attr("movie-id", element.id);
+        addBtn.attr("release-date", element.release_date);
+        addBtn.text("Add to My Movies");
+        movieDiv.append(addBtn);
+        movieDiv.append(movieImg);
+        movieDiv.append(movieDetails);
+        movieDiv.append(releaseDate);
+        movieDiv.append(movieTitle);
+        $("#dynamic-content").append(movieDiv);
       }
-      addBtn.attr("movie-id", element.id);
-      addBtn.attr("release-date", element.release_date);
-      addBtn.text("Add to My Movies");
-      movieDiv.append(addBtn);
-      movieDiv.append(movieImg);
-      movieDiv.append(movieDetails);
-      movieDiv.append(releaseDate);
-      movieDiv.append(movieTitle);
-      $("#dynamic-content").append(movieDiv);
-    }
-    page++;
-    totalResults += results.length;
-    // console.log(response.total_results);
-    // console.log(totalResults);
-    if (response.total_results <= totalResults) {
-      //  Prevents creation of a "Load More Results" button if there are no more results to display
-    }
-    else {
-      //  Creates a "Load More Results" button if there are more results to be displayed
-      var moreResultsBtn = $("<button>");
-      moreResultsBtn.attr("id", "more-movie-results");
-      moreResultsBtn.attr("result-type", param1);
-      moreResultsBtn.attr("result-characteristic", param2);
-      moreResultsBtn.attr("increment", page);
-      moreResultsBtn.attr("search-term", searchTerm);
-      moreResultsBtn.text("Load More Results");
-      $("#dynamic-content").append(moreResultsBtn);
-    }
-  });
+      page++;
+      totalResults += narf.length;
+      // console.log(response.total_results);
+      // console.log(totalResults);
+      if (response.total_results <= totalResults) {
+        //  Prevents creation of a "Load More Results" button if there are no more results to display
+      }
+      else {
+        //  Creates a "Load More Results" button if there are more results to be displayed
+        var moreResultsBtn = $("<button>");
+        moreResultsBtn.attr("id", "more-movie-results");
+        moreResultsBtn.attr("result-type", param1);
+        moreResultsBtn.attr("result-characteristic", param2);
+        moreResultsBtn.attr("increment", page);
+        moreResultsBtn.attr("search-term", searchTerm);
+        moreResultsBtn.text("Load More Results");
+        $("#dynamic-content").append(moreResultsBtn);
+      }
+    });
 }
+
 
 //  Adds a movie to the database (which is where 'My List' entries are stored)
 function newDbMovieObject(p1, p2, p3, p4) {
@@ -170,6 +176,7 @@ $("#my-movie-content").on("click", ".remove-movie-btn", function () {
 //  Firebase listener to populate the "My Movies" page on page load
 varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
+  console.log(data);
   $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>More Info</a></h6><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
 });
 
