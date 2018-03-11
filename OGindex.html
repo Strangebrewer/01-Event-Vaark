@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Event-Vark: Never Miss An Event Again</title>
+  <link rel="stylesheet" href="assets/css/reset.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/jquery-3.3.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Event
+      <a href="index.html">
+        <img src="assets/images/aardvark.png">
+      </a> Vaark</h1>
+  </header>
+
+  <div class="content-wrapper">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="movies.html">My Movies</a>
+      <a href="events.html">My Events</a>
+    </nav>
+
+    <div class="main-btn-array">
+      <button class="main-btn" id="display-current">Current Movies</button>
+      <button class="main-btn" id="display-upcoming">Upcoming Movies</button>
+      <button class='main-btn' id="display-events">Events</button>
+    </div>
+
+    <div class="search-forms">
+      <h2>Search</h2>
+      <form>
+        <label for="movie-input">Movie Title:</label>
+        <input type="text" id="movie-input">
+        <input type="submit" value="Submit" id="movie-search-btn">
+      </form>
+
+      <form>
+        <label for="event-keyword-input">Event Keywords:</label>
+        <input type="text" id="event-keyword-input">
+        <label for="event-city-input">Event City:</label>
+        <input type="text" id="event-city-input">
+        <label for="event-zipcode-input">Zip Code:</label>
+        <input type="text" pattern="(\d{5}([\-]\d{4})?)" id="event-zipcode-input">
+        <label for="event-within-input">Within (miles):</label>
+        <input type="text" id="event-within-input">
+        <input type="submit" value="Submit" id="event-search-btn">
+      </form>
+    </div>
+
+    <div class="main-content" id="dynamic-content">
+      <h3>Movies Currently in Theaters</h3>
+    </div>
+
+    <div class="at-a-glance">
+      <h4>Movies</h4>
+      <table class="glance-table">
+        <thead>
+          <tr>
+            <th>Release Date</th>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody id="movie-quick-list"></tbody>
+      </table>
+
+      <h4 id="h4-two">Events</h4>
+      <table class="glance-table">
+        <thead>
+          <tr>
+            <th>Event Date</th>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody id="event-quick-list"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <footer>
+    &#9400;Copyright 2018 The League of Extraordinary Coders
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/events.js"></script>
+</body>
+
+
+</html>

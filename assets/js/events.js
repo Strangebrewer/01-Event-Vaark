@@ -21,7 +21,7 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
       const element = results[i];
       var eventDiv = $("<div class='event-container'>");
       var eventInfo = $("<div class='event-info-container'>");
-      var addBtn = $("<button class='add-event-btn'>");
+      var addBtn = $("<button class='button add-event-btn'>");
       var eventImg = $("<img class='event-poster'>");
       var eventDate = $("<h5 class='event-date'>").text(moment(element.start_time).format("YYYY-MM-DD") + " @ " + moment(element.start_time).format("h:mm a"));
       var eventTitle = $("<p class='event-title'>").text(element.title);
@@ -56,7 +56,7 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
       //  Prevents creation of a "Load More Results" button if there are no more results to display
     }
     else {
-      var moreResultsBtn = $("<button>");
+      var moreResultsBtn = $("<button class='button'>");
       moreResultsBtn.attr("id", "more-event-results");
       moreResultsBtn.attr("location", location);
       moreResultsBtn.attr("zipcode", zipcode);
@@ -100,7 +100,8 @@ function eventQuickListItem(p1, p2, p3, p4) {
 //  EVENTS button - static button, displays default events search
 $("#display-events").on("click", function () {
   $("#dynamic-content").empty();
-  $("#dynamic-content").append("<h3>Coming Events</h3>");
+  $("#dynamic-content").append("<h2>Coming Events</h2>");
+  $("#dynamic-content").css("display", "flex");
   displayEvents("Salt+Lake+City", pageNumber);
 });
 
@@ -108,7 +109,8 @@ $("#display-events").on("click", function () {
 $("#event-search-btn").on("click", function (event) {
   event.preventDefault();
   $("#dynamic-content").empty();
-  $("#dynamic-content").append("<h3>Search Results</h3>");
+  $("#dynamic-content").css("display", "flex");
+  $("#dynamic-content").append("<h2>Search Results</h2>");
   pageNumber = 1;
   pageCount = 0;
   var searchCity = $("#event-city-input").val().trim();
@@ -155,7 +157,7 @@ $("#my-event-content").on("click", ".remove-event-btn", function () {
 //  Firebase listener to populate the "My Events" page on page load
 varkDb.ref("events").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
-  $("#my-event-content").append("<div class='event-container'><button class='remove-event-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='event-poster'><div class='event-info-container'><p class='event-title'>" + data.title + "</p><h5 class='event-date'>" + moment(data.date).format("YYYY-MM-DD") + " @ " + moment(data.date).format("h:mm a") + "</h5><h6 class='event-city'>" + data.city + "</h6></div></div>");
+  $("#my-event-content").append("<div class='event-container'><button class='button remove-event-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='event-poster'><div class='event-info-container'><p class='event-title'>" + data.title + "</p><h5 class='event-date'>" + moment(data.date).format("YYYY-MM-DD") + " @ " + moment(data.date).format("h:mm a") + "</h5><h6 class='event-city'>" + data.city + "</h6></div></div>");
 });
 
 //  Firebase listener to populate the "at a glance" list

@@ -6,90 +6,148 @@
   <meta name="viewport" content="width=device-width initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Event-Vark: Never Miss An Event Again</title>
-  <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/jquery-3.3.1.js"></script>
-  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- Latest compiled and minified Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <!-- Project CSS -->
+  <link rel="stylesheet" href="assets/css/style2.css">
 </head>
 
 <body>
-  <header>
-    <h1>Event
-      <a href="index.html">
-        <img src="assets/images/aardvark.png">
-      </a> Vaark</h1>
-  </header>
+  <div class="sticky-footer-wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
 
-  <div class="content-wrapper">
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="movies.html">My Movies</a>
-      <a href="events.html">My Events</a>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+            aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="index.html">The League of Extraordinary Coders</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="index.html">Home</a>
+            </li>
+            <li>
+              <a href="movies.html">My Movies</a>
+            </li>
+            <li>
+              <a href="events.html">My Events</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </nav>
 
-    <div class="main-btn-array">
-      <button class="main-btn" id="display-current">Current Movies</button>
-      <button class="main-btn" id="display-upcoming">Upcoming Movies</button>
-      <button class='main-btn' id="display-events">Events</button>
+    <div class="jumbotron">
+      <div class="container">
+          <h1>Event
+              <a href="index.html">
+                <img src="assets/images/aardvark.png">
+              </a> Vaark!</h1>
+        <nav class="links">
+          <a href="index.html">Home</a>
+          <a href="movies.html">My Movies</a>
+          <a href="events.html">My Events</a>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="btn-array">
+        <p class="pre-defined">Pre-defined searches:</p>
+        <button class="button main-btn" id="display-current">Current Movies</button>
+        <button class="button main-btn" id="display-upcoming">Upcoming Movies</button>
+        <button class="button main-btn" id="display-events">Local Events</button>
+      </div>
     </div>
 
-    <div class="search-forms">
-      <h2>Search</h2>
-      <form>
-        <label for="movie-input">Movie Title:</label>
-        <input type="text" id="movie-input">
-        <input type="submit" value="Submit" id="movie-search-btn">
-      </form>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-3 col-sm-3 search-forms">
+          <h3>Search</h3>
+          <h4>Movies</h4>
+          <form class="top-form">
+            <label for="movie-input">Movie Title:</label>
+            <input type="text" id="movie-input">
+            <input class="button" type="submit" value="Submit" id="movie-search-btn">
+          </form>
+          <h4 class="second-h4">Events</h4>
+          <form class="bottom-form">
+            <label for="event-keyword-input">Event Keywords:</label>
+            <input type="text" id="event-keyword-input">
+            <label for="event-city-input">Event City:</label>
+            <input type="text" id="event-city-input">
+            <label for="event-zipcode-input">Zip Code:</label>
+            <input type="text" pattern="(\d{5}([\-]\d{4})?)" id="event-zipcode-input">
+            <label for="event-within-input">Within (mi):</label>
+            <input type="text" id="event-within-input">
+            <input class="button" type="submit" value="Submit" id="event-search-btn">
+          </form>
+        </div>
 
-      <form>
-        <label for="event-keyword-input">Event Keywords:</label>
-        <input type="text" id="event-keyword-input">
-        <label for="event-city-input">Event City:</label>
-        <input type="text" id="event-city-input">
-        <label for="event-zipcode-input">Zip Code:</label>
-        <input type="text" pattern="(\d{5}([\-]\d{4})?)" id="event-zipcode-input">
-        <label for="event-within-input">Within (miles):</label>
-        <input type="text" id="event-within-input">
-        <input type="submit" value="Submit" id="event-search-btn">
-      </form>
+        <div class="col-lg-6 col-md-9 main-content" id="dynamic-content">
+          <h2>Movies Currently in Theaters</h2>
+        </div>
+
+        <div class="col-lg-3  at-a-glance">
+          <h3>My Lists at a Glance</h3>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6 col-lg-12">
+              <h4>Movies</h4>
+              <table class="glance-table">
+                <thead>
+                  <tr>
+                    <th>Release Date</th>
+                    <th>Title</th>
+                  </tr>
+                </thead>
+                <tbody id="movie-quick-list"></tbody>
+              </table>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-lg-12">
+              <h4  class="second-h4">Events</h4>
+              <table class="glance-table">
+                <thead>
+                  <tr>
+                    <th>Event Date</th>
+                    <th>Title</th>
+                  </tr>
+                </thead>
+                <tbody id="event-quick-list"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
-
-    <div class="main-content" id="dynamic-content">
-      <h3>Movies Currently in Theaters</h3>
-    </div>
-
-    <div class="at-a-glance">
-      <h4>Movies</h4>
-      <table class="glance-table">
-        <thead>
-          <tr>
-            <th>Release Date</th>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody id="movie-quick-list"></tbody>
-      </table>
-
-      <h4 id="h4-two">Events</h4>
-      <table class="glance-table">
-        <thead>
-          <tr>
-            <th>Event Date</th>
-            <th>Title</th>
-          </tr>
-        </thead>
-        <tbody id="event-quick-list"></tbody>
-      </table>
-    </div>
-
   </div>
 
-  <footer>
-    &#9400;Copyright 2018 The League of Extraordinary Coders
-  </footer>
+  <div class="container-fluid footer">
+    <footer>
+      <p>&copy; 2018 The League of Extraordinary Coders</p>
+    </footer>
+  </div>
+  <!-- /container -->
 
+
+  <!-- Latest compiled and minified Bootstrap JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/events.js"></script>
 </body>

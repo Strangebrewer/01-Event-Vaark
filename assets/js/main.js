@@ -36,49 +36,49 @@ function displayMovies(param1, param2, page, searchTerm) {
     url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false"
   }).then(function (response) {
     console.log(response.data.results);
-      var narf = response.data.results;
-      for (let i = 0; i < narf.length; i++) {
-        const element = narf[i];
-        var movieDiv = $("<div class='movie-container'>");
-        var addBtn = $("<button class='add-movie-btn'>");
-        var movieImg = $("<img class='movie-poster'>");
-        var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
-        var movieTitle = $("<p class='movie-title'>").text(element.original_title);
-        var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
-        if (element.poster_path === null) {
-          movieImg.attr("src", "assets/images/film.jpg");
-        } else {
-          movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
-        }
-        addBtn.attr("movie-id", element.id);
-        addBtn.attr("release-date", element.release_date);
-        addBtn.text("Add to My Movies");
-        movieDiv.append(addBtn);
-        movieDiv.append(movieImg);
-        movieDiv.append(movieDetails);
-        movieDiv.append(releaseDate);
-        movieDiv.append(movieTitle);
-        $("#dynamic-content").append(movieDiv);
+    var narf = response.data.results;
+    for (let i = 0; i < narf.length; i++) {
+      const element = narf[i];
+      var movieDiv = $("<div class='movie-container'>");
+      var addBtn = $("<button class='button add-movie-btn'>");
+      var movieImg = $("<img class='movie-poster'>");
+      var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
+      var movieTitle = $("<p class='movie-title'>").text(element.original_title);
+      var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
+      if (element.poster_path === null) {
+        movieImg.attr("src", "assets/images/film.jpg");
+      } else {
+        movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
       }
-      page++;
-      totalResults += narf.length;
-      // console.log(response.total_results);
-      // console.log(totalResults);
-      if (response.total_results <= totalResults) {
-        //  Prevents creation of a "Load More Results" button if there are no more results to display
-      }
-      else {
-        //  Creates a "Load More Results" button if there are more results to be displayed
-        var moreResultsBtn = $("<button>");
-        moreResultsBtn.attr("id", "more-movie-results");
-        moreResultsBtn.attr("result-type", param1);
-        moreResultsBtn.attr("result-characteristic", param2);
-        moreResultsBtn.attr("increment", page);
-        moreResultsBtn.attr("search-term", searchTerm);
-        moreResultsBtn.text("Load More Results");
-        $("#dynamic-content").append(moreResultsBtn);
-      }
-    });
+      addBtn.attr("movie-id", element.id);
+      addBtn.attr("release-date", element.release_date);
+      addBtn.text("Add to My Movies");
+      movieDiv.append(addBtn);
+      movieDiv.append(movieImg);
+      movieDiv.append(movieDetails);
+      movieDiv.append(releaseDate);
+      movieDiv.append(movieTitle);
+      $("#dynamic-content").append(movieDiv);
+    }
+    page++;
+    totalResults += narf.length;
+    // console.log(response.total_results);
+    // console.log(totalResults);
+    if (response.total_results <= totalResults) {
+      //  Prevents creation of a "Load More Results" button if there are no more results to display
+    }
+    else {
+      //  Creates a "Load More Results" button if there are more results to be displayed
+      var moreResultsBtn = $("<button class='button'>");
+      moreResultsBtn.attr("id", "more-movie-results");
+      moreResultsBtn.attr("result-type", param1);
+      moreResultsBtn.attr("result-characteristic", param2);
+      moreResultsBtn.attr("increment", page);
+      moreResultsBtn.attr("search-term", searchTerm);
+      moreResultsBtn.text("Load More Results");
+      $("#dynamic-content").append(moreResultsBtn);
+    }
+  });
 }
 
 
@@ -114,7 +114,7 @@ displayMovies("movie", "now_playing", pageNumber);
 $("#display-current").on("click", function () {
   $("#dynamic-content").empty();
   $("#dynamic-content").css("display", "flex");
-  $("#dynamic-content").append("<h3>Movies Currently in Theaters</h3>");
+  $("#dynamic-content").append("<h2>Movies Currently in Theaters</h2>");
   totalResults = 0;
   pageNumber = 1;
   displayMovies("movie", "now_playing", pageNumber);
@@ -124,7 +124,7 @@ $("#display-current").on("click", function () {
 $("#display-upcoming").on("click", function () {
   $("#dynamic-content").empty();
   $("#dynamic-content").css("display", "flex");
-  $("#dynamic-content").append("<h3>Movies Coming Soon</h3>");
+  $("#dynamic-content").append("<h2>Movies Coming Soon</h2>");
   totalResults = 0;
   pageNumber = 1;
   displayMovies("movie", "upcoming", pageNumber);
@@ -134,7 +134,8 @@ $("#display-upcoming").on("click", function () {
 $("#movie-search-btn").on("click", function (event) {
   event.preventDefault();
   $("#dynamic-content").empty();
-  $("#dynamic-content").append("<h3>Search Results</h3>");
+  $("#dynamic-content").css("display", "flex");
+  $("#dynamic-content").append("<h2>Search Results</h2>");
   totalResults = 0;
   pageNumber = 1;
   displayMovies("search", "movie", pageNumber, $("#movie-input").val().trim());
@@ -177,7 +178,7 @@ $("#my-movie-content").on("click", ".remove-movie-btn", function () {
 varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
   console.log(data);
-  $("#my-movie-content").append("<div class='movie-container'><button class='remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>More Info</a></h6><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
+  $("#my-movie-content").append("<div class='movie-container'><button class='button remove-movie-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='movie-poster'><h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>More Info</a></h6><h5 class='movie-date'>" + data.date + "</h5><p class='movie-title'>" + data.title + "</p></div>");
 });
 
 //  Firebase listener to populate the "at a glance" list
