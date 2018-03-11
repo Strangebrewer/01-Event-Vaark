@@ -63,6 +63,24 @@ h4 {
   color: #979797;
 }
 
+.tmdb-logo-div {
+  text-align: center;
+  width: 50%;
+}
+
+.tmdb-logo {
+  width: 120px;
+}
+
+.eventful-logo-div {
+  text-align: center;
+  width: 50%;
+}
+
+.eventful-logo {
+  width: 120px;
+}
+
 .links {
   margin-top: 50px;
 }
@@ -365,60 +383,6 @@ form, table {
   }
 }
 
-
-
-
-
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-#my-event-content {
-  display: block;
-}
-
-.event-container {
-  display: block;
-  margin: 20px 0;
-}
-
-.event-info-container {
-  display: inline-block;
-  max-width: 50%;
-  padding-left: 20px;
-  vertical-align: middle;
-}
-
-.event-poster {
-  border: 3px solid #555;
-  box-shadow: 8px 8px 15px #000;
-  margin-left: 20px;
-  vertical-align: middle;
-  width: 100px;
-}
-
-.event-date {
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.2em;
-}
-
-.event-city {
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.2em;
-}
-
-.event-title {
-  color: #444;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.3em;
-  font-weight: bold;
-}
-
-.add-event-btn {
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
 @media screen and (max-width: 700px) {
   .at-a-glance {
     padding: 0 50px;
@@ -454,6 +418,15 @@ form, table {
   .jumbotron h1 {
     font-size: 3em;
   }
+  .tmdb-logo {
+    width: 80px;
+  }
+  .eventful-logo {
+    width: 80px;
+  }
+  .eventful-logo-p {
+    font-size: .7em;
+  }
   .jumbotron h1 img {
     width: 120px;
     margin: -40px -40px 0 -40px;
@@ -470,7 +443,7 @@ form, table {
   .event-poster {
     width: 75px;
   }
-  .event-date, .event-city,  .event-title {
+  .event-date, .event-city, .event-title {
     margin: 2px 0;
     font-size: .9em;
   }
@@ -562,6 +535,10 @@ form, table {
     margin: 2px 0;
     font-size: .8em;
   }
+
+.footer-p {
+  font-size: .75em;
+}
 }
 
 @media screen and (max-width: 350px) {

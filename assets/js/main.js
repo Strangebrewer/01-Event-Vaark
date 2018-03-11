@@ -19,17 +19,8 @@ var pageNumber = 1;
 var totalResults = 0;
 
 //  FUNCTIONS
-//  Movie API ajax call function
+//  Movie API call function
 function displayMovies(param1, param2, page, searchTerm) {
-  //   //  The Search term is passed in as searchTerm when the function is called. This allows emptying the search field while still retaining the search term for the "Load More Results" button.
-  // $.ajax({
-  //   "async": true,
-  //   "crossDomain": true,
-  //   //  param1 and param2 change depending on if it is a preset search (such as "upcoming" or "now-playing") or if it accepts search terms. In the former, param1 would be "movie", and in the latter, param1 would be "search".
-  //   //  searchTerm can be left out of the function call for preset searches (i.e. "upcoming" and "now_playing") without interfering with  those searches. This allows for a single function to handle all movie ajax calls.
-  //   url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false",
-  //   method: "GET",
-  // })
 
   axios({
     method: 'get',
@@ -64,7 +55,7 @@ function displayMovies(param1, param2, page, searchTerm) {
     totalResults += narf.length;
     // console.log(response.total_results);
     // console.log(totalResults);
-    if (response.total_results <= totalResults) {
+    if (response.data.total_results <= totalResults) {
       //  Prevents creation of a "Load More Results" button if there are no more results to display
     }
     else {
