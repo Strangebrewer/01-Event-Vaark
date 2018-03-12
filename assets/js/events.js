@@ -1,8 +1,7 @@
+var pageCount = 0;
 
 //  FUNCTIONS
-//  Event API ajax call function
-
-var pageCount = 0;
+//  Event API call function using ajax
 
 function displayEvents(location, page, searchTerm, zipcode, within) {
   $("#dynamic-content").css("display", "block");
@@ -12,23 +11,31 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
     url: "https://api.eventful.com/json/events/search?...&app_key=4xmNBd2Pb7vPw3Rz&l=" + location + zipcode + within + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&sort_order=popularity",
     method: 'GET'
   }).then(function (response) {
-    var results = JSON.parse(response).events.event;
-    console.log(JSON.parse(response));
+    var eventResults = JSON.parse(response).events.event;
     var pageTotal = JSON.parse(response).page_count;
+    console.log(eventResults);
 
-    for (let i = 0; i < results.length; i++) {
-      console.log(results.length);
-      const element = results[i];
-      var eventDiv = $("<div class='event-container'>");
+    for (let i = 0; i < eventResults.length; i++) {
+      const element = eventResults[i];
+      var eventDiv = $("<div class='event-container event-anime" + page + "'>");
       var eventInfo = $("<div class='event-info-container'>");
       var addBtn = $("<button class='button add-event-btn'>");
       var eventImg = $("<img class='event-poster'>");
       var eventDate = $("<h5 class='event-date'>").text(moment(element.start_time).format("YYYY-MM-DD") + " @ " + moment(element.start_time).format("h:mm a"));
       var eventTitle = $("<p class='event-title'>").text(element.title);
-
       var eventCity = $("<h6 class='event-city'>" + element.venue_name + " - " + element.city_name + ", " + element.region_abbr + "<br><a href='" + element.url + "' class='event-link' target='_blank'>More info</a></h6>");
 
-      console.log(element.title);
+      //  Some event ids include date info preceded by an '@' symbol, which creates an error when using that as a firebase object key, so the following checks for '@' and uses everything before it as the id.
+      var altId;
+      if (element.id.includes("@")) {
+        altId = element.id.split("@").shift();
+        addBtn.attr("event-id", altId);
+      }
+      else {
+        addBtn.attr("event-id", element.id);
+      }
+
+      //  Some API responses from eventful don't include an image, and some have an image but leave the 'http:' off the image url. The following checks to make sure there is an image, and that the image url in the API response includes http:. If there is no image, a generic default is used; if there is no http:, this adds it.
       if (element.image === null) {
         eventImg.attr("src", "assets/images/narf.png");
       } else if (element.image.medium.url.includes("http")) {
@@ -36,7 +43,8 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
       } else {
         eventImg.attr("src", "http:" + element.image.medium.url);
       }
-      addBtn.attr("event-id", element.id);
+
+      //  Append each individual result to the 'dynamic-content' div
       addBtn.attr("start-time", element.start_time);
       addBtn.text("Add");
       eventDiv.append(addBtn);
@@ -48,14 +56,24 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
       $("#dynamic-content").append(eventDiv);
       $("#dynamic-content").append("<hr>");
     }
-    page++;
+
+    //  Greensock animation
+    var eventObject = $(".event-anime" + page);
+    TweenMax.staggerFrom(eventObject, 1.5, {
+      opacity: 0,
+      rotationX: "720eg",
+      left: "800px",
+      ease: Power2.easeOut
+    }, 0.2);
+
+    //  increment flag variables
+    pageNumber++;
     pageCount++;
 
-    console.log(pageTotal);
-    if (pageTotal <= pageCount) {
-      //  Prevents creation of a "Load More Results" button if there are no more results to display
-    }
+    //  Conditional to control whether a "Load More Results" button is needed
+    if (pageTotal <= pageCount) { }
     else {
+      //  Creates a "Load More Results" button if there is more than one page of results
       var moreResultsBtn = $("<button class='button'>");
       moreResultsBtn.attr("id", "more-event-results");
       moreResultsBtn.attr("location", location);
@@ -67,11 +85,10 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
       $("#dynamic-content").append(moreResultsBtn);
     }
   });
-}
+} // end displayEvents() function
 
-//  Adds a movie to the database (which is where 'My List' entries are stored)
+//  Adds an event to database events (which is where 'My Events' entries are stored)
 function newDbEventObject(p1, p2, p3, p4, p5, p6) {
-  console.log(p1);
   var dbKey = p3;
   var newEvent = {
     title: p1,
@@ -84,7 +101,7 @@ function newDbEventObject(p1, p2, p3, p4, p5, p6) {
   return varkDb.ref("events").child(dbKey).set(newEvent);
 }
 
-// Adds data to the "quickList" database object (which is where the "at a glance" list pulls from)
+// Adds an event to the "eventQuickList" database object (which is where the "at a glance" events list pulls from)
 function eventQuickListItem(p1, p2, p3, p4) {
   var dbKey = p3;
   var listItem = {
@@ -97,9 +114,11 @@ function eventQuickListItem(p1, p2, p3, p4) {
 }
 // END FUNCTIONS
 
+//  BUTTON CLICKS (event handlers)
 //  EVENTS button - static button, displays default events search
 $("#display-events").on("click", function () {
   $("#dynamic-content").empty();
+  pageNumber = 1;
   $("#dynamic-content").append("<h2>Coming Events</h2>");
   $("#dynamic-content").css("display", "flex");
   displayEvents("Salt+Lake+City", pageNumber);
@@ -108,31 +127,64 @@ $("#display-events").on("click", function () {
 //  EVENTS SEARCH button
 $("#event-search-btn").on("click", function (event) {
   event.preventDefault();
-  $("#dynamic-content").empty();
-  $("#dynamic-content").css("display", "flex");
-  $("#dynamic-content").append("<h2>Search Results</h2>");
   pageNumber = 1;
   pageCount = 0;
   var searchCity = $("#event-city-input").val().trim();
-  var searchKeywords = "&keywords=" + $("#event-keyword-input").val().trim();
+
+  //  Eventful's search does not seem to like an empty 'q=title:' in the search string, so the following prevents adding it unless the 'Event or Artist' search is used
+  var searchKeywords = "";
+  if ($("#event-keyword-input").val().trim() === "") { }
+  else {
+    searchKeywords = "&q=title:" + $("#event-keyword-input").val().trim();
+  }
+
   var searchZipcode = $("#event-zipcode-input").val();
   var searchWithin = "&within=" + $("#event-within-input").val().trim();
-  displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
+  var zipTest = /^\d{5}(-\d{4})?$/.test(searchZipcode);
+
+  //  User input validation
+  if ((!(searchZipcode === "")) || (!($("#event-within-input").val().trim())) === "") {
+    if (!zipTest) {
+      $("#search-error").empty();
+      $("#search-error").text("Please enter a valid zip code.");
+    }
+    else if (zipTest && ($("#event-within-input").val().trim() === "")) {
+      $("#search-error").empty();
+      $("#search-error").text("You must also enter a search radius if you enter a zip code.");
+    }
+    else if (zipTest && (isNaN($("#event-within-input").val().trim()) || ($("#event-within-input").val().trim() < 0))) {
+      $("#search-error").empty();
+      $("#search-error").text("Please enter a valid search radius.");
+    }
+    else {
+      $("#search-error").empty();
+      $("#dynamic-content").empty();
+      $("#dynamic-content").css("display", "flex");
+      $("#dynamic-content").append("<h2>Search Results</h2>");
+      displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
+    }
+  } else {
+    $("#search-error").empty();
+    $("#dynamic-content").empty();
+    $("#dynamic-content").css("display", "flex");
+    $("#dynamic-content").append("<h2>Search Results</h2>");
+    displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
+  }
+  $(".event-search-input").val("");
 });
 
-//  LOAD MORE EVENT RESULTS Button - dynamic button to add another page of search results
+//  LOAD MORE EVENT RESULTS Button - dynamic button, adds another page of search results
 $("#dynamic-content").on("click", "#more-event-results", function () {
   //  Create parameters to pass into the function
   var param1 = $(this).attr("location");
-  var param2 = $(this).attr("increment");
   var param3 = $(this).attr("search-term");
   //  Call the function
-  displayEvents(param1, param2, param3);
-  //  Remove the button - it will be recreated at the bottom by the displayMovies() function
+  displayEvents(param1, pageNumber, param3);
+  //  Remove the button after click - it will be recreated at the bottom if necessary by the displayEvents() function
   $(this).remove();
 });
 
-//  ADD TO MY EVENTS button - dynamic button, adds movie to db movies and db quickList
+//  ADD TO MY EVENTS button - dynamic button, adds event to db events and db eventQuickList
 $("#dynamic-content").on("click", ".add-event-btn", function () {
   var title = $(this).siblings("div").children("p").html();
   var poster = $(this).siblings("img").attr("src");
@@ -140,12 +192,11 @@ $("#dynamic-content").on("click", ".add-event-btn", function () {
   var eventDate = $(this).attr("start-time");
   var eventCity = $(this).siblings("div").children("h6").html();
   var eventInfo = $(this).siblings("div").children("h6").children("a").attr("href");
-  console.log(eventInfo);
   newDbEventObject(title, eventDate, eventId, poster, eventCity, eventInfo);
   eventQuickListItem(title, eventDate, eventId, eventInfo);
 });
 
-//  REMOVE EVENT button - dynamic button, removes from My List: from html, from db movies, and from db quickList
+//  REMOVE EVENT button - dynamic button, removes from My Events html, from db events, and from db eventQuickList
 $("#my-event-content").on("click", ".remove-event-btn", function () {
   var remove = $(this).attr("data");
   $(this).closest("div").remove();
@@ -157,11 +208,22 @@ $("#my-event-content").on("click", ".remove-event-btn", function () {
 //  Firebase listener to populate the "My Events" page on page load
 varkDb.ref("events").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
-  $("#my-event-content").append("<div class='event-container'><button class='button remove-event-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='event-poster'><div class='event-info-container'><p class='event-title'>" + data.title + "</p><h5 class='event-date'>" + moment(data.date).format("YYYY-MM-DD") + " @ " + moment(data.date).format("h:mm a") + "</h5><h6 class='event-city'>" + data.city + "</h6></div></div>");
+  $("#my-event-content").append("<div class='event-container' id='" + data.objKey + "'><button class='button remove-event-btn' data='" + data.objKey + "'>Remove</button><img src='" + data.poster + "' class='event-poster'><div class='event-info-container'><p class='event-title'>" + data.title + "</p><h5 class='event-date'>" + moment(data.date).format("YYYY-MM-DD") + " @ " + moment(data.date).format("h:mm a") + "</h5><h6 class='event-city'>" + data.city + "</h6></div></div>");
+  var eventStuff = $("#" + data.objKey);
+  TweenLite.from(eventStuff, 1.5, {
+    opacity: 0,
+    left: "800px",
+    rotationX: "720deg",
+    ease: Back.easeOut
+  });
+}, function(errorObject) {
+  $("#my-movie-content").append("<p>" + errorObject.code);
 });
 
-//  Firebase listener to populate the "at a glance" list
+//  Firebase listener to populate the "at a glance" events list
 varkDb.ref("eventQuickList").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
   $("#event-quick-list").append("<tr id='" + data.objKey + "'><td>" + moment(data.date).format("YYYY-MM-DD") + "</td><td><a href='" + data.link + "' class='event-link' target='_blank'>" + data.title + "</a></td></tr>");
+}, function(errorObject) {
+  $("#my-movie-content").append("<p>" + errorObject.code);
 });
