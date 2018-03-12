@@ -207,7 +207,7 @@ varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnaps
     ease: Back.easeOut
   }, 0.25);
 }, function(errorObject) {
-  $("#my-movie-content").append("<p>" + errorObject.code);
+  $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
 
 //  Firebase listener to populate the "at a glance" movies list
@@ -215,5 +215,5 @@ varkDb.ref("movieQuickList").orderByChild("date").on("child_added", function (ch
   var data = childSnapshot.val();
   $("#movie-quick-list").append("<tr id='" + data.objKey + "'><td>" + data.date + "</td><td><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>" + data.title + "</a></td></tr>");
 }, function(errorObject) {
-  $("#my-movie-content").append("<p>" + errorObject.code);
+  $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });

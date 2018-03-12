@@ -1,11 +1,9 @@
-/* Move down content because we have a fixed navbar that is 50px tall */
-
 body {
   display: flex;
   flex-direction: column;
-  padding-top: 50px;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-top: 50px;
 }
 
 .sticky-footer-wrapper {
@@ -21,6 +19,8 @@ h4 {
   width: 100%;
 }
 
+/* Navbar and Jumbotron styling */
+
 .navbar {
   background-color: #000;
   border-bottom: none;
@@ -34,8 +34,8 @@ h4 {
   background: linear-gradient(#000, #850000);
   box-shadow: 0 0 30px #000;
   color: #cfcfcf;
-  text-align: center;
   padding-bottom: 10px;
+  text-align: center;
 }
 
 .jumbotron h1 {
@@ -64,35 +64,19 @@ h4 {
 }
 
 .jumbotron nav a:hover {
-  text-decoration: none;
   color: #979797;
+  text-decoration: none;
 }
 
 #logo {
   position: relative;
 }
 
-.tmdb-logo-div {
-  text-align: center;
-  width: 50%;
-}
-
-.tmdb-logo {
-  width: 120px;
-}
-
-.eventful-logo-div {
-  text-align: center;
-  width: 50%;
-}
-
-.eventful-logo {
-  width: 120px;
-}
-
 .links {
   margin-top: 50px;
 }
+
+/* Predefined Search Buttons */
 
 .btn-array {
   text-align: center;
@@ -128,6 +112,8 @@ h4 {
   outline: none;
 }
 
+/* Search Form styling */
+
 .search-forms {
   padding: 0 50px;
 }
@@ -154,12 +140,14 @@ form, table {
   color: #ff0000;
 }
 
+/* Dynamic-Content div styling */
+
 .main-content {
   display: flex;
   flex-wrap: wrap;
 }
 
-#my-movie-content {
+#my-movie-content, #my-event-content {
   display: flex;
 }
 
@@ -222,6 +210,7 @@ form, table {
 .movie-poster {
   height: 200px;
   margin: 10px auto;
+  width: 135px;
 }
 
 /* individual event search result container */
@@ -273,7 +262,17 @@ form, table {
   vertical-align: middle;
 }
 
-/* END individual event search result container */
+.event-link {
+  color: #850000;
+  font-weight: bold;
+}
+
+.event-link:hover {
+  color: #35ff03;
+  text-decoration: none;
+}
+
+/* At-a-glance table styling */
 
 .at-a-glance {
   padding: 0 50px;
@@ -301,23 +300,30 @@ form, table {
   font-size: 1.1em;
 }
 
-.event-link {
-  color: #850000;
-  font-weight: bold;
-}
-
-.event-link:hover {
-  color: #35ff03;
-  text-decoration: none;
-}
-
 /* footer styling */
+
+.tmdb-logo-div {
+  text-align: center;
+  width: 50%;
+}
+
+.tmdb-logo {
+  width: 120px;
+}
+
+.eventful-logo-div {
+  text-align: center;
+  width: 50%;
+}
+
+.eventful-logo {
+  width: 120px;
+}
 
 .footer {
   background: linear-gradient(#850000, #000);
   box-shadow: 0 0 30px #000;
   color: #bbb;
-  /* font-size: .7em; */
   margin-top: 30px;
   padding: 20px;
   text-align: center;
@@ -341,6 +347,7 @@ form, table {
   }
   .movie-container img {
     height: 180px;
+    width: 121px;
   }
 }
 
@@ -348,26 +355,20 @@ form, table {
   .at-a-glance {
     display: none;
   }
-  .movie-container img {
-    height: 180px;
-  }
 }
 
 @media screen and (max-width: 991px) {
-  .at-a-glance {
-    padding: 0 50px;
-  }
   .search-forms {
-    width: 100%;
-    padding-bottom: 10px;
-    margin-top: 10px;
     border-top: 2px solid grey;
     border-bottom: 2px solid grey;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
   }
   form label, form input {
     display: inline-block;
-    width: 20%;
     margin-top: 5px;
+    width: 20%;
   }
   form label {
     text-align: right;
@@ -377,9 +378,6 @@ form, table {
   }
   h4 {
     text-align: center;
-  }
-  .at-a-glance {
-    padding: 0 50px;
   }
   #movie-search-btn, #event-search-btn, form, h4 {
     margin-bottom: 0;
@@ -402,9 +400,6 @@ form, table {
 }
 
 @media screen and (max-width: 700px) {
-  .at-a-glance {
-    padding: 0 50px;
-  }
   .event-title {
     font-size: 1em;
     margin-bottom: 4px;
@@ -415,11 +410,9 @@ form, table {
   .event-date, .event-city {
     margin: 4px 0;
   }
-  .glance-table {
-    width: 100%;
-  }
   .movie-container img {
     height: 150px;
+    width: 101px;
   }
   .movie-link {
     font-size: 1em;
@@ -446,30 +439,22 @@ form, table {
     font-size: .7em;
   }
   .jumbotron h1 img {
-    width: 120px;
     margin: -40px -40px 0 -40px;
-  }
-  .at-a-glance {
-    padding: 0 20px;
-  }
-  .glance-table {
-    width: 100%;
+    width: 120px;
   }
   .event-title {
     margin-bottom: 2px;
   }
-  .event-poster {
-    width: 75px;
-  }
   .event-date, .event-city, .event-title {
-    margin: 2px 0;
     font-size: .9em;
+    margin: 2px 0;
   }
   .add-event-btn {
     font-size: .9em;
   }
   .movie-container img {
     height: 140px;
+    width: 95px;
   }
   .movie-link {
     font-size: .9em;
@@ -499,18 +484,12 @@ form, table {
     font-size: 3em;
   }
   .jumbotron h1 img {
-    width: 120px;
     margin: -40px -40px 0 -40px;
+    width: 120px;
   }
   .jumbotron nav a {
     font-size: 1.1em;
     padding: 0 12px 0 9px;
-  }
-  .at-a-glance {
-    padding: 0 20px;
-  }
-  .glance-table {
-    width: 100%;
   }
   form input, #movie-input {
     width: 45%;
@@ -520,11 +499,9 @@ form, table {
   }
   .movie-container img {
     height: 120px;
+    width: 81px;
   }
-  .movie-link {
-    font-size: .8em;
-  }
-  .movie-date {
+  .movie-link, .movie-date {
     font-size: .8em;
   }
   .movie-title {
@@ -542,6 +519,7 @@ form, table {
 @media screen and (max-width: 420px) {
   .movie-container img {
     height: 90px;
+    width: 61px;
   }
   .event-title {
     margin-bottom: 4px;
@@ -550,18 +528,17 @@ form, table {
     width: 60px;
   }
   .event-date, .event-city, .event-title {
-    margin: 2px 0;
     font-size: .8em;
   }
-
-.footer-p {
-  font-size: .75em;
-}
+  .footer-p {
+    font-size: .75em;
+  }
 }
 
 @media screen and (max-width: 350px) {
   .movie-container img {
     height: 120px;
+    width: 81px;
   }
   .navbar a {
     font-size: .85em;
@@ -577,20 +554,11 @@ form, table {
   .jumbotron h1 {
     font-size: 2.7em;
   }
-  .movie-link {
-    font-size: .8em;
-  }
-  .movie-date {
-    font-size: .8em;
-  }
   form input, #movie-input {
     width: 45%;
   }
-  .movie-input .movie-title {
+  #movie-input .movie-title {
     font-size: .9em;
-  }
-  .btn-array .button {
-    margin: 0 2px;
   }
   .button {
     font-size: .7em;

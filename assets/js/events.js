@@ -218,7 +218,7 @@ varkDb.ref("events").orderByChild("date").on("child_added", function (childSnaps
     ease: Back.easeOut
   });
 }, function(errorObject) {
-  $("#my-movie-content").append("<p>" + errorObject.code);
+  $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
 
 //  Firebase listener to populate the "at a glance" events list
@@ -226,5 +226,5 @@ varkDb.ref("eventQuickList").orderByChild("date").on("child_added", function (ch
   var data = childSnapshot.val();
   $("#event-quick-list").append("<tr id='" + data.objKey + "'><td>" + moment(data.date).format("YYYY-MM-DD") + "</td><td><a href='" + data.link + "' class='event-link' target='_blank'>" + data.title + "</a></td></tr>");
 }, function(errorObject) {
-  $("#my-movie-content").append("<p>" + errorObject.code);
+  $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
