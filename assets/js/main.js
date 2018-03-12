@@ -39,9 +39,10 @@ function displayMovies(param1, param2, page, searchTerm) {
       if (element.poster_path === null) {
         movieImg.attr("src", "assets/images/film.jpg");
       } else {
-        movieImg.attr("src", "https://image.tmdb.org/t/p/original/" + element.poster_path);
+        movieImg.attr("src", "https://image.tmdb.org/t/p/original" + element.poster_path);
       }
 
+      
       //  Append each individual result to the 'dynamic-content' div
       addBtn.attr("movie-id", element.id);
       addBtn.attr("release-date", element.release_date);

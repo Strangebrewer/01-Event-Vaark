@@ -35,13 +35,14 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
         addBtn.attr("event-id", element.id);
       }
 
-      //  Some API responses from eventful don't include an image, and some have an image but leave the 'http:' off the image url. The following checks to make sure there is an image, and that the image url in the API response includes http:. If there is no image, a generic default is used; if there is no http:, this adds it.
+      //  Some API responses from eventful don't include an image, and a few have an image but add 'http:' to the image url. The following checks to make sure there is an image, and whether the image url in the API response includes http (which will return true whether it's http or https). If there is no image, a generic default is used; if there is no http, this adds https:
       if (element.image === null) {
         eventImg.attr("src", "assets/images/narf.png");
       } else if (element.image.medium.url.includes("http")) {
+        console.log(i + " doesn't have http!");
         eventImg.attr("src", element.image.medium.url);
       } else {
-        eventImg.attr("src", "http:" + element.image.medium.url);
+        eventImg.attr("src", "https:" + element.image.medium.url);
       }
 
       //  Append each individual result to the 'dynamic-content' div
