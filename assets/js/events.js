@@ -148,14 +148,23 @@ $("#event-search-btn").on("click", function (event) {
     if (!zipTest) {
       $("#search-error").empty();
       $("#search-error").text("Please enter a valid zip code.");
+      document.getElementById("event-zipcode-input").disabled = false;
+      document.getElementById("event-within-input").disabled = false;
+      document.getElementById("event-city-input").disabled = false;
     }
     else if (zipTest && ($("#event-within-input").val().trim() === "")) {
       $("#search-error").empty();
       $("#search-error").text("You must also enter a search radius if you enter a zip code.");
+      document.getElementById("event-zipcode-input").disabled = false;
+      document.getElementById("event-within-input").disabled = false;
+      document.getElementById("event-city-input").disabled = false;
     }
     else if (zipTest && (isNaN($("#event-within-input").val().trim()) || ($("#event-within-input").val().trim() < 0))) {
       $("#search-error").empty();
       $("#search-error").text("Please enter a valid search radius.");
+      document.getElementById("event-zipcode-input").disabled = false;
+      document.getElementById("event-within-input").disabled = false;
+      document.getElementById("event-city-input").disabled = false;
     }
     else {
       $("#search-error").empty();
@@ -163,6 +172,9 @@ $("#event-search-btn").on("click", function (event) {
       $("#dynamic-content").css("display", "flex");
       $("#dynamic-content").append("<h2>Search Results</h2>");
       displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
+      document.getElementById("event-zipcode-input").disabled = false;
+      document.getElementById("event-within-input").disabled = false;
+      document.getElementById("event-city-input").disabled = false;
     }
   } else {
     $("#search-error").empty();
@@ -217,7 +229,7 @@ varkDb.ref("events").orderByChild("date").on("child_added", function (childSnaps
     rotationX: "720deg",
     ease: Back.easeOut
   });
-}, function(errorObject) {
+}, function (errorObject) {
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
 
@@ -225,6 +237,6 @@ varkDb.ref("events").orderByChild("date").on("child_added", function (childSnaps
 varkDb.ref("eventQuickList").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
   $("#event-quick-list").append("<tr id='" + data.objKey + "'><td>" + moment(data.date).format("YYYY-MM-DD") + "</td><td><a href='" + data.link + "' class='event-link' target='_blank'>" + data.title + "</a></td></tr>");
-}, function(errorObject) {
+}, function (errorObject) {
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
