@@ -2,7 +2,6 @@ var pageCount = 0;
 
 //  FUNCTIONS
 //  Event API call function using ajax
-
 function displayEvents(location, page, searchTerm, zipcode, within) {
   $("#dynamic-content").css("display", "block");
   $.ajax({
@@ -11,79 +10,83 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
     url: "https://obscure-gorge-69381.herokuapp.com/https://api.eventful.com/json/events/search?...&app_key=4xmNBd2Pb7vPw3Rz&l=" + location + zipcode + within + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&sort_order=popularity",
     method: 'GET'
   }).then(function (response) {
-    var eventResults = JSON.parse(response).events.event;
-    var pageTotal = JSON.parse(response).page_count;
-    console.log(eventResults);
+    console.log(JSON.parse(response));
 
-    for (let i = 0; i < eventResults.length; i++) {
-      const element = eventResults[i];
-      var eventDiv = $("<div class='event-container event-anime" + page + "'>");
-      var eventInfo = $("<div class='event-info-container'>");
-      var addBtn = $("<button class='button add-event-btn'>");
-      var eventImg = $("<img class='event-poster'>");
-      var eventDate = $("<h5 class='event-date'>").text(moment(element.start_time).format("YYYY-MM-DD") + " @ " + moment(element.start_time).format("h:mm a"));
-      var eventTitle = $("<p class='event-title'>").text(element.title);
-      var eventCity = $("<h6 class='event-city'>" + element.venue_name + " - " + element.city_name + ", " + element.region_abbr + "<br><a href='" + element.url + "' class='event-link' target='_blank'>More info</a></h6>");
-
-      //  Some event ids include date info preceded by an '@' symbol, which creates an error when using that as a firebase object key, so the following checks for '@' and uses everything before it as the id.
-      var altId;
-      if (element.id.includes("@")) {
-        altId = element.id.split("@").shift();
-        addBtn.attr("event-id", altId);
-      }
-      else {
-        addBtn.attr("event-id", element.id);
-      }
-
-      //  Some API responses from eventful don't include an image, and a few have an image but add 'http:' to the image url. The following checks to make sure there is an image, and whether the image url in the API response includes http (which will return true whether it's http or https). If there is no image, a generic default is used; if there is no http, this adds https:
-      if (element.image === null) {
-        eventImg.attr("src", "assets/images/narf.png");
-      } else if (element.image.medium.url.includes("http")) {
-        console.log(i + " doesn't have http!");
-        eventImg.attr("src", element.image.medium.url);
-      } else {
-        eventImg.attr("src", "https:" + element.image.medium.url);
-      }
-
-      //  Append each individual result to the 'dynamic-content' div
-      addBtn.attr("start-time", element.start_time);
-      addBtn.text("Add");
-      eventDiv.append(addBtn);
-      eventDiv.append(eventImg);
-      eventInfo.append(eventTitle);
-      eventInfo.append(eventDate);
-      eventInfo.append(eventCity);
-      eventDiv.append(eventInfo);
-      $("#dynamic-content").append(eventDiv);
-      $("#dynamic-content").append("<hr>");
+    if (JSON.parse(response).total_items === "0") {
+      $("#dynamic-content").append("<p class='search-error'>Your search did not produce any results. Please try again.</p>");
     }
-
-    //  Greensock animation
-    var eventObject = $(".event-anime" + page);
-    TweenMax.staggerFrom(eventObject, 1.5, {
-      opacity: 0,
-      rotationX: "720eg",
-      left: "800px",
-      ease: Power2.easeOut
-    }, 0.2);
-
-    //  increment flag variables
-    pageNumber++;
-    pageCount++;
-
-    //  Conditional to control whether a "Load More Results" button is needed
-    if (pageTotal <= pageCount) { }
     else {
-      //  Creates a "Load More Results" button if there is more than one page of results
-      var moreResultsBtn = $("<button class='button'>");
-      moreResultsBtn.attr("id", "more-event-results");
-      moreResultsBtn.attr("location", location);
-      moreResultsBtn.attr("zipcode", zipcode);
-      moreResultsBtn.attr("within", within);
-      moreResultsBtn.attr("increment", page);
-      moreResultsBtn.attr("search-term", searchTerm);
-      moreResultsBtn.text("Load More Results");
-      $("#dynamic-content").append(moreResultsBtn);
+
+      var eventResults = JSON.parse(response).events.event;
+      var pageTotal = JSON.parse(response).page_count;
+      for (let i = 0; i < eventResults.length; i++) {
+        const element = eventResults[i];
+        var eventDiv = $("<div class='event-container event-anime" + page + "'>");
+        var eventInfo = $("<div class='event-info-container'>");
+        var addBtn = $("<button class='button add-event-btn'>");
+        var eventImg = $("<img class='event-poster'>");
+        var eventDate = $("<h5 class='event-date'>").text(moment(element.start_time).format("YYYY-MM-DD") + " @ " + moment(element.start_time).format("h:mm a"));
+        var eventTitle = $("<p class='event-title'>").text(element.title);
+        var eventCity = $("<h6 class='event-city'>" + element.venue_name + " - " + element.city_name + ", " + element.region_abbr + "<br><a href='" + element.url + "' class='event-link' target='_blank'>More info</a></h6>");
+
+        //  Some event ids include date info preceded by an '@' symbol, which creates an error when using that as a firebase object key, so the following checks for '@' and uses everything before it as the id.
+        var altId;
+        if (element.id.includes("@")) {
+          altId = element.id.split("@").shift();
+          addBtn.attr("event-id", altId);
+        }
+        else {
+          addBtn.attr("event-id", element.id);
+        }
+
+        //  Some API responses from eventful don't include an image, and a few have an image but add 'http:' to the image url. The following checks to make sure there is an image, and whether the image url in the API response includes http (which will return true whether it's http or https). If there is no image, a generic default is used; if there is no http, this adds https:
+        if (element.image === null) {
+          eventImg.attr("src", "assets/images/narf.png");
+        } else if (element.image.medium.url.includes("http")) {
+          eventImg.attr("src", element.image.medium.url);
+        } else {
+          eventImg.attr("src", "https:" + element.image.medium.url);
+        }
+
+        //  Append each individual result to the 'dynamic-content' div
+        addBtn.attr("start-time", element.start_time);
+        addBtn.text("Add");
+        eventDiv.append(addBtn);
+        eventDiv.append(eventImg);
+        eventInfo.append(eventTitle);
+        eventInfo.append(eventDate);
+        eventInfo.append(eventCity);
+        eventDiv.append(eventInfo);
+        $("#dynamic-content").append(eventDiv);
+        $("#dynamic-content").append("<hr>");
+      }
+
+      //  Greensock animation - getting the class with the current page number prevents it from reanimating existing items when you are only loading more results ("Load More Results" button).
+      var eventObject = $(".event-anime" + page);
+      TweenMax.staggerFrom(eventObject, 1.5, {
+        opacity: 0,
+        rotationX: "720eg",
+        left: "800px",
+        ease: Power2.easeOut
+      }, 0.2);
+
+      //  increment flag variables
+      pageNumber++;
+      pageCount++;
+
+      //  Conditional to control whether a "Load More Results" button is needed
+      if (pageTotal > pageCount) {
+        //  Creates a "Load More Results" button if there is more than one page of results
+        var moreResultsBtn = $("<button class='button'>");
+        moreResultsBtn.attr("id", "more-event-results");
+        moreResultsBtn.attr("location", location);
+        moreResultsBtn.attr("zipcode", zipcode);
+        moreResultsBtn.attr("within", within);
+        moreResultsBtn.attr("increment", page);
+        moreResultsBtn.attr("search-term", searchTerm);
+        moreResultsBtn.text("Load More Results");
+        $("#dynamic-content").append(moreResultsBtn);
+      }
     }
   });
 } // end displayEvents() function
@@ -105,13 +108,13 @@ function newDbEventObject(p1, p2, p3, p4, p5, p6) {
 // Adds an event to the "eventQuickList" database object (which is where the "at a glance" events list pulls from)
 function eventQuickListItem(p1, p2, p3, p4) {
   var dbKey = p3;
-  var listItem = {
+  var eventListItem = {
     title: p1,
     date: p2,
     link: p4,
     objKey: dbKey
   }
-  return varkDb.ref("eventQuickList").child(dbKey).set(listItem);
+  return varkDb.ref("eventQuickList").child(dbKey).set(eventListItem);
 }
 // END FUNCTIONS
 
@@ -132,10 +135,9 @@ $("#event-search-btn").on("click", function (event) {
   var searchCity = $("#event-city-input").val().trim();
 
   //  Eventful's search does not seem to like an empty 'q=title:' in the search string, so the following prevents adding it unless the 'Event or Artist' search is used
-  var searchKeywords = "";
-  if ($("#event-keyword-input").val().trim() === "") { }
-  else {
-    searchKeywords = "&q=title:" + $("#event-keyword-input").val().trim();
+  // var searchKeywords = "";
+  if (!($("#event-keyword-input").val().trim() === "")) {
+    var searchKeywords = "&q=title:" + $("#event-keyword-input").val().trim();
   }
 
   var searchZipcode = $("#event-zipcode-input").val();
@@ -180,16 +182,18 @@ $("#event-search-btn").on("click", function (event) {
     $("#dynamic-content").append("<h2>Search Results</h2>");
     displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
   }
-  $(".event-search-input").val("");
+  // $(".event-search-input").val("");
 });
 
 //  LOAD MORE EVENT RESULTS Button - dynamic button, adds another page of search results
 $("#dynamic-content").on("click", "#more-event-results", function () {
   //  Create parameters to pass into the function
   var param1 = $(this).attr("location");
-  var param3 = $(this).attr("search-term");
+  var param2 = $(this).attr("search-term");
+  var param3 = $(this).attr("zipcode");
+  var param4 = $(this).attr("within");
   //  Call the function
-  displayEvents(param1, pageNumber, param3);
+  displayEvents(param1, pageNumber, param2, param3, param4);
   //  Remove the button after click - it will be recreated at the bottom if necessary by the displayEvents() function
   $(this).remove();
 });
@@ -227,6 +231,7 @@ varkDb.ref("events").orderByChild("date").on("child_added", function (childSnaps
     ease: Back.easeOut
   });
 }, function (errorObject) {
+  console.log(errorObject);
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
 
@@ -235,5 +240,6 @@ varkDb.ref("eventQuickList").orderByChild("date").on("child_added", function (ch
   var data = childSnapshot.val();
   $("#event-quick-list").append("<tr id='" + data.objKey + "'><td>" + moment(data.date).format("YYYY-MM-DD") + "</td><td><a href='" + data.link + "' class='event-link' target='_blank'>" + data.title + "</a></td></tr>");
 }, function (errorObject) {
+  console.log(errorObject);
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });

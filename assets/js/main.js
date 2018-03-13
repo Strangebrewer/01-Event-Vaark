@@ -27,60 +27,65 @@ function displayMovies(param1, param2, page, searchTerm) {
     var movieResults = response.data.results;
     console.log(movieResults);
 
-    for (let i = 0; i < movieResults.length; i++) {
-      const element = movieResults[i];
-      var movieDiv = $("<div class='movie-container movie-anime" + page + "'>");
-      var addBtn = $("<button class='button add-movie-btn'>");
-      var movieImg = $("<img class='movie-poster'>");
-      var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
-      var movieTitle = $("<p class='movie-title'>").text(element.original_title);
-      var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
-
-      //  Some API responses from TMDB don't include posters, so the following checks for a poster, and if it finds 'null', it uses a generic default.
-      if (element.poster_path === null) {
-        movieImg.attr("src", "assets/images/film.jpg");
-      } else {
-        movieImg.attr("src", "https://image.tmdb.org/t/p/original" + element.poster_path);
-      }
-      
-      //  Append each individual result to the 'dynamic-content' div
-      addBtn.attr("movie-id", element.id);
-      addBtn.attr("release-date", element.release_date);
-      addBtn.text("Add to My Movies");
-      movieDiv.attr("id", element.id + page);
-      movieDiv.append(addBtn);
-      movieDiv.append(movieImg);
-      movieDiv.append(movieDetails);
-      movieDiv.append(releaseDate);
-      movieDiv.append(movieTitle);
-      $("#dynamic-content").append(movieDiv);
+    if (movieResults.length === 0) {
+      $("#dynamic-content").append("<p class='search-error'>Your search did not produce any results. Please try again.</p>");
     }
-
-    // Greensock animation
-    var movieObject = $(".movie-anime" + page);
-    TweenMax.staggerFrom(movieObject, 1.5, {
-      opacity: 0,
-      rotationY: "720eg",
-      left: "800px",
-      ease: Power2.easeOut
-    }, 0.2);
-
-    //  increment flag variables
-    pageNumber++;
-    totalResults += movieResults.length;
-
-    //  Conditional to control whether a "Load More Results" button is needed
-    if (response.data.total_results <= totalResults) { }
     else {
-      //  Creates a "Load More Results" button if there is more than one page of results
-      var moreResultsBtn = $("<button class='button'>");
-      moreResultsBtn.attr("id", "more-movie-results");
-      moreResultsBtn.attr("result-type", param1);
-      moreResultsBtn.attr("result-characteristic", param2);
-      moreResultsBtn.attr("increment", page);
-      moreResultsBtn.attr("search-term", searchTerm);
-      moreResultsBtn.text("Load More Results");
-      $("#dynamic-content").append(moreResultsBtn);
+
+      for (let i = 0; i < movieResults.length; i++) {
+        const element = movieResults[i];
+        var movieDiv = $("<div class='movie-container movie-anime" + page + "'>");
+        var addBtn = $("<button class='button add-movie-btn'>");
+        var movieImg = $("<img class='movie-poster'>");
+        var releaseDate = $("<h5 class='movie-date'>").text(element.release_date);
+        var movieTitle = $("<p class='movie-title'>").text(element.original_title);
+        var movieDetails = $("<h6 class='movie-details'><a href='https://www.themoviedb.org/movie/" + element.id + "' class='movie-link' target='_blank'>More Info</a></h6>");
+
+        //  Some API responses from TMDB don't include posters, so the following checks for a poster, and if it finds 'null', it uses a generic default.
+        if (element.poster_path === null) {
+          movieImg.attr("src", "assets/images/film.jpg");
+        } else {
+          movieImg.attr("src", "https://image.tmdb.org/t/p/original" + element.poster_path);
+        }
+
+        //  Append each individual result to the 'dynamic-content' div
+        addBtn.attr("movie-id", element.id);
+        addBtn.attr("release-date", element.release_date);
+        addBtn.text("Add to My Movies");
+        movieDiv.attr("id", element.id + page);
+        movieDiv.append(addBtn);
+        movieDiv.append(movieImg);
+        movieDiv.append(movieDetails);
+        movieDiv.append(releaseDate);
+        movieDiv.append(movieTitle);
+        $("#dynamic-content").append(movieDiv);
+      }
+
+      // Greensock animation - getting the class with the current page number prevents it from reanimating existing items when you are only loading more results ("Load More Results" button).
+      var movieObject = $(".movie-anime" + page);
+      TweenMax.staggerFrom(movieObject, 1.5, {
+        opacity: 0,
+        rotationY: "720eg",
+        left: "800px",
+        ease: Power2.easeOut
+      }, 0.2);
+
+      //  increment flag variables
+      pageNumber++;
+      totalResults += movieResults.length;
+
+      //  Conditional to control whether a "Load More Results" button is needed
+      if (response.data.total_results > totalResults) {
+        //  Creates a "Load More Results" button if there is more than one page of results
+        var moreResultsBtn = $("<button class='button'>");
+        moreResultsBtn.attr("id", "more-movie-results");
+        moreResultsBtn.attr("result-type", param1);
+        moreResultsBtn.attr("result-characteristic", param2);
+        moreResultsBtn.attr("increment", page);
+        moreResultsBtn.attr("search-term", searchTerm);
+        moreResultsBtn.text("Load More Results");
+        $("#dynamic-content").append(moreResultsBtn);
+      }
     }
   });
 } // end displayMovies() function
@@ -100,12 +105,12 @@ function newDbMovieObject(p1, p2, p3, p4) {
 //  Adds data to the "movieQuickList" database object (which is where the "at a glance" movies list pulls from)
 function movieQuickListItem(p1, p2, p3) {
   var dbKey = p3;
-  var listItem = {
+  var movieListItem = {
     title: p1,
     date: p2,
     objKey: dbKey
   }
-  return varkDb.ref("movieQuickList").child(dbKey).set(listItem);
+  return varkDb.ref("movieQuickList").child(dbKey).set(movieListItem);
 }
 
 //  Disables 'Zip Code' and 'Within' search fields if anything is entered into the 'Event City' search field.
@@ -204,7 +209,8 @@ varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnaps
     left: "800px",
     ease: Back.easeOut
   }, 0.25);
-}, function(errorObject) {
+}, function (errorObject) {
+  console.log(errorObject);
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
 
@@ -212,6 +218,7 @@ varkDb.ref("movies").orderByChild("date").on("child_added", function (childSnaps
 varkDb.ref("movieQuickList").orderByChild("date").on("child_added", function (childSnapshot) {
   var data = childSnapshot.val();
   $("#movie-quick-list").append("<tr id='" + data.objKey + "'><td>" + data.date + "</td><td><a href='https://www.themoviedb.org/movie/" + data.objKey + "' class='movie-link' target='_blank'>" + data.title + "</a></td></tr>");
-}, function(errorObject) {
+}, function (errorObject) {
+  console.log(errorObject);
   $("#my-movie-content").append("<p>" + errorObject.code + "</p>");
 });
