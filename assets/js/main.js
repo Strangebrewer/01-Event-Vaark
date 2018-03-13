@@ -28,7 +28,7 @@ function displayMovies(param1, param2, page, searchTerm) {
     console.log(movieResults);
 
     if (movieResults.length === 0) {
-      $("#dynamic-content").append("<p class='search-error'>Your search did not produce any results. Please try again.</p>");
+      $("#search-error").html("Your search did not produce any results. Please try again.");
     }
     else {
 

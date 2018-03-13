@@ -13,7 +13,7 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
     console.log(JSON.parse(response));
 
     if (JSON.parse(response).total_items === "0") {
-      $("#dynamic-content").append("<p class='search-error'>Your search did not produce any results. Please try again.</p>");
+      $("#search-error").html("Your search did not produce any results. Please try again.");
     }
     else {
 
