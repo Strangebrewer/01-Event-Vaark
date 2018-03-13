@@ -147,8 +147,12 @@ form, table {
   flex-wrap: wrap;
 }
 
-#my-movie-content, #my-event-content {
+#my-movie-content {
   display: flex;
+}
+
+#my-event-content {
+  display: block;
 }
 
 /* individual movie search result container */

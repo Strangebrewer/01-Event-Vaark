@@ -8,7 +8,7 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
   $.ajax({
     async: true,
     crossDomain: true,
-    url: "https://api.eventful.com/json/events/search?...&app_key=4xmNBd2Pb7vPw3Rz&l=" + location + zipcode + within + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&sort_order=popularity",
+    url: "https://obscure-gorge-69381.herokuapp.com/https://api.eventful.com/json/events/search?...&app_key=4xmNBd2Pb7vPw3Rz&l=" + location + zipcode + within + searchTerm + "&page_size=20&page_number=" + page + "&date=Future&sort_order=popularity",
     method: 'GET'
   }).then(function (response) {
     var eventResults = JSON.parse(response).events.event;
@@ -121,7 +121,6 @@ $("#display-events").on("click", function () {
   $("#dynamic-content").empty();
   pageNumber = 1;
   $("#dynamic-content").append("<h2>Coming Events</h2>");
-  $("#dynamic-content").css("display", "flex");
   displayEvents("Salt+Lake+City", pageNumber);
 });
 
@@ -169,7 +168,6 @@ $("#event-search-btn").on("click", function (event) {
     else {
       $("#search-error").empty();
       $("#dynamic-content").empty();
-      $("#dynamic-content").css("display", "flex");
       $("#dynamic-content").append("<h2>Search Results</h2>");
       displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
       document.getElementById("event-zipcode-input").disabled = false;
@@ -179,7 +177,6 @@ $("#event-search-btn").on("click", function (event) {
   } else {
     $("#search-error").empty();
     $("#dynamic-content").empty();
-    $("#dynamic-content").css("display", "flex");
     $("#dynamic-content").append("<h2>Search Results</h2>");
     displayEvents(searchCity, pageNumber, searchKeywords, searchZipcode, searchWithin);
   }

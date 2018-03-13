@@ -19,6 +19,7 @@ var totalResults = 0;
 //  FUNCTIONS
 //  Movie API call function
 function displayMovies(param1, param2, page, searchTerm) {
+  $("#dynamic-content").css("display", "flex");
   axios({
     method: 'get',
     url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false"
@@ -132,7 +133,6 @@ function disableCityField() {
 //  CURRENT MOVIES button - static button, displays Current field, which defaults to movies currently in theaters
 $("#display-current").on("click", function () {
   $("#dynamic-content").empty();
-  $("#dynamic-content").css("display", "flex");
   $("#dynamic-content").append("<h2>Movies Currently in Theaters</h2>");
   totalResults = 0;
   pageNumber = 1;
@@ -142,7 +142,6 @@ $("#display-current").on("click", function () {
 //  UPCOMING button - displays Upcoming field, which defaults to movies being released in the next two weeks or so
 $("#display-upcoming").on("click", function () {
   $("#dynamic-content").empty();
-  $("#dynamic-content").css("display", "flex");
   $("#dynamic-content").append("<h2>Movies Coming Soon</h2>");
   totalResults = 0;
   pageNumber = 1;
@@ -153,7 +152,6 @@ $("#display-upcoming").on("click", function () {
 $("#movie-search-btn").on("click", function (event) {
   event.preventDefault();
   $("#dynamic-content").empty();
-  $("#dynamic-content").css("display", "flex");
   $("#dynamic-content").append("<h2>Search Results</h2>");
   totalResults = 0;
   pageNumber = 1;
