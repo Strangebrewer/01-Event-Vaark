@@ -10,7 +10,7 @@
 ### [6-Contributors](https://github.com/Strangebrewer/01-Event-Vark#Contributors)
  ---
 ### 1-Description
-This project was a result of a conversation about missed movies and events. You go to a movie and see a preview for a movie that looks AWESOME and you can't wait to see it, but, unfortunately, you're going to have to because the release date is a vague and distant "Summer 2017". You make a mental note of it and lean over and tell your friend you can't wait to see that one on the big screen. Then you move on with life, and before you know it, "Summer 2017" has come and gone and you completely forgot, and by the time you remember the movie, it's been out for months and is only available on Blu-Ray.
+This project was a result of a conversation about missed movies and events. You go to a movie and see a preview for a movie that looks AWESOME and you can't wait to see it, but, unfortunately, you're going to have to because the release date is a vague and distant "Summer 2017". You make a mental note of it and lean over and tell your friend you can't wait to see that one on the big screen. Then you move on with life, and before you know it, "Summer 2017" has come and gone and you completely forgot, and by the time you remember the movie, it's been out for months and is only available on Blu-Ray. 
 
 Event Vaark lets you save your own curated list of movies and events you don't want to miss. It has an effective search function and a convenient "at-a-glance" list to serve you when memory fails to.
 ---
