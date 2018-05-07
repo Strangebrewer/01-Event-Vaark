@@ -19,6 +19,8 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
 
       var eventResults = JSON.parse(response).events.event;
       var pageTotal = JSON.parse(response).page_count;
+
+      //  loop through the results and combine html elements with search results
       for (let i = 0; i < eventResults.length; i++) {
         const element = eventResults[i];
         var eventDiv = $("<div class='event-container event-anime" + page + "'>");
@@ -76,7 +78,8 @@ function displayEvents(location, page, searchTerm, zipcode, within) {
 
       //  Conditional to control whether a "Load More Results" button is needed
       if (pageTotal > pageCount) {
-        //  Creates a "Load More Results" button if there is more than one page of results
+
+        //  Creates a "Load More Results" button with all necessary search parameters embedded as attributes
         var moreResultsBtn = $("<button class='button'>");
         moreResultsBtn.attr("id", "more-event-results");
         moreResultsBtn.attr("location", location);

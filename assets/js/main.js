@@ -24,6 +24,7 @@ function displayMovies(param1, param2, page, searchTerm) {
     method: 'get',
     url: "https://api.themoviedb.org/3/" + param1 + "/" + param2 + "?api_key=ab8e08e3d76136182fa701fcadfde64a&language=en-US&region=US&query=" + searchTerm + "&page=" + page + "&include_adult=false"
   }).then(function (response) {
+
     var movieResults = response.data.results;
     console.log(movieResults);
 
@@ -32,6 +33,7 @@ function displayMovies(param1, param2, page, searchTerm) {
     }
     else {
 
+      //  loop through the results and combine html elements with search results
       for (let i = 0; i < movieResults.length; i++) {
         const element = movieResults[i];
         var movieDiv = $("<div class='movie-container movie-anime" + page + "'>");
@@ -76,7 +78,8 @@ function displayMovies(param1, param2, page, searchTerm) {
 
       //  Conditional to control whether a "Load More Results" button is needed
       if (response.data.total_results > totalResults) {
-        //  Creates a "Load More Results" button if there is more than one page of results
+
+        //  Creates a "Load More Results" button with all necessary search parameters embedded as attributes
         var moreResultsBtn = $("<button class='button'>");
         moreResultsBtn.attr("id", "more-movie-results");
         moreResultsBtn.attr("result-type", param1);
@@ -166,12 +169,15 @@ $("#movie-search-btn").on("click", function (event) {
 
 //  LOAD MORE MOVIE RESULTS Button - dynamic button, adds another page of search results
 $("#dynamic-content").on("click", "#more-movie-results", function () {
+
   //  Create parameters to pass into the function
   var param1 = $(this).attr("result-type");
   var param2 = $(this).attr("result-characteristic");
   var param4 = $(this).attr("search-term");
+
   //  Call the function
   displayMovies(param1, param2, pageNumber, param4);
+
   //  Remove the button after click - it will be recreated at the bottom if necessary by the displayMovies() function
   $(this).remove();
 });
