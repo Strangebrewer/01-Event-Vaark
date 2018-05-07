@@ -29,7 +29,7 @@ Event Vaark lets you save your own curated list of movies and events you don't w
 - Responsive Design
 
 ### 3-Challenges
-The primary challenge presented by this project was Firebase. Firebase is an awesome tool if you need a simple storage solution, but it did take some time to figure out. Otherwise, this was a fairly straightforward project that just required time and persistence to work through. The API request results are, I think, fun to work through and parse out into useful pieces, and the Greensock animations were fun as well.
+The primary challenge presented by this project was Firebase. Firebase is an awesome tool if you need a simple storage solution, but it did take some time to figure out. Otherwise, this was a fairly straightforward project that just required time and persistence to work through. AJAX request results are, I think, fun to work through and parse out into useful pieces, and the Greensock animations were fun as well.
 
 ### 4-Issues
   Currently there are no known issues that need to be resolved. If you find an issue please submit it using the issues tab, or contact [Keith Allmon](https://github.com/Strangebrewer/).
