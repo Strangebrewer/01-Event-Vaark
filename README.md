@@ -2,12 +2,12 @@
 
 ## Table of contents:
   
-### [1-Description](https://github.com/Strangebrewer/01-Event-Vark#Description)
-### [2-Technologies](https://github.com/Strangebrewer/01-Event-Vark#Technologies)
-### [3-Challenges](https://github.com/Strangebrewer/01-Event-Vark#Challenges)
-### [4-Issues](https://github.com/Strangebrewer/01-Event-Vark#Issues)
-### [5-Future Development](https://github.com/Strangebrewer/01-Event-Vark#Desired-Features)
-### [6-Contributors](https://github.com/Strangebrewer/01-Event-Vark#Contributors)
+### 1-Description
+### 2-Technologies
+### 3-Challenges
+### 4-Issues
+### 5-Future Development
+### 6-Contributors
 
 ### 1-Description
 This project was a result of a conversation about missed movies and events. You go to a movie and see a preview for a movie that looks AWESOME and you can't wait to see it, but, unfortunately, you're going to have to because the release date is a vague and distant "Summer 2017". You make a mental note of it and lean over and tell your friend you can't wait to see that one on the big screen. Then you move on with life, and before you know it, "Summer 2017" has come and gone and you completely forgot, and by the time you remember the movie, it's been out for months and is only available on Blu-Ray. 
