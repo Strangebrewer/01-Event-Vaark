@@ -1,4 +1,4 @@
-# 01-Event-Vark
+# Event Vaark
 
 ## Table of contents:
   
